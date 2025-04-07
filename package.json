@@ -11,6 +11,8 @@
     "bp": "vite build && vite preview --host"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.0",
+    "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "vite-plugin-top-level-await": "^1.5.0"
