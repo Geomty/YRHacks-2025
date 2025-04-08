@@ -1,9 +1,7 @@
-export default function Node({ setModal, title, width, height, backgroundColor, fontSize }) {
+export default function Node({ setModal, info, backgroundColor, fontSize }) {
     return (
-        <button type="button" style={{width, height, backgroundColor}} className="rounded-full flex hover:cursor-pointer" onClick={() => {
-            setModal({ title })
-        }}>
-            <div style={{fontSize}} className="m-auto text-black">{title}</div>
-        </button>
+        <div style={{backgroundColor}} className="w-fit h-fit p-8 flex items-center rounded-full hover:cursor-pointer">
+            <div style={{fontSize}} className="m-auto text-black text-2xl" onClick={() => setModal(info)}>{info.title}</div>
+        </div>
     )
 }
