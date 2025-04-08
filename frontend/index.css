@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@theme {
+    --color-lightgray: rgb(224, 224, 224);
+    --color-lightorange: rgb(255, 148, 16);
+    --color-lightblue: rgb(94, 133, 228);
+    --color-lightbeige: rgb(254, 232, 186);
+    --color-lightgreen: rgb(92, 191, 126);
+    --color-lightpurple: rgb(215, 189, 247);
+}

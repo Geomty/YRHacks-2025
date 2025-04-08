@@ -21,13 +21,15 @@ const { WebSocketServer } = require("ws");
 const sockserver = new WebSocketServer({ port: 443 });
 const spawnChildProcess = require("./child_process.cjs");
 
+sockserver.on("listening", () => console.log("Server online"));
+
 sockserver.on("connection", async (ws) => {
 	console.log("New client connected!");
 	ws.send("Connection established!");
 	ws.on("close", () => console.log("Client has disconnected!"));
 	// This is confusing to read - it is two words "on error"
 	ws.onerror = () => {
-		console.log("websocket error");
+		console.log("Websocket error");
 	}
     spawnChildProcess(ws);
 });

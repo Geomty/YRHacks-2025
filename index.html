@@ -1,12 +1,49 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HackerDucks</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/frontend/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="/frontend/index.css" rel="stylesheet">
+  <link rel="icon" href="./brain_logo.svg">
+  <title>In the Node</title>
+</head>
+
+<body>
+  <div class="bg-white">
+    <div class="flex h-[4em] sticky mb-20 top-0 max-w items-center gap-8 p-8 border-b-1 border-lightgray">
+      <div class="flex items-center justify-between gap-4 -mx-2">
+        <img width="20" height="20" src="brain_logo.svg" alt="orange brain logo" />
+        <h1 fontSize="20rem" class="gap-4 font-bold text-lightorange">In The Node</h1>
+      </div>
+
+      <div class='flex ml-8 w-4/5 h-8 gap-8 items-center'>
+        <input
+          class="w-full shadow-sm m-auto p-1 pl-8 overflow-hidden rounded-xl border-1 
+          border-lightgray placeholder:text-lightgrey focus:border-lightorange focus:outline-none focus:ring-0 focus:shadow-lightorange"
+          placeholder="Enter Link..." id="userid"/>
+        <button class="bg-lightorange rounded-lg text-white px-4 py-1">
+          Generate
+        </button>
+        <button class="bg-lightorange rounded-lg text-white px-4 py-1" id="upload-input">
+          Upload
+        </button>
+        <button class="bg-lightorange rounded-lg text-white px-4 py-1" id="download-button">
+          Download
+        </button>
+      </div>
+    </div>
+
+      <div id="tree" class="mt-8 overflow-auto w-screen h-[calc(100vh-4em)] bg-center bg:[url(dot_pattern.svg)] bg-repeat absolute top-[4em] left-0">
+        <a id="link" download class="hidden"></a>
+        <svg id="svg"></svg>
+      </div>
+
+      <div id="modal"></div>
+    <script type="module" src="/frontend/websocket.js"></script>
+    <script type="module" src="/frontend/tree.js"></script>
+    <script type="module" src="/frontend/main.js"></script>
+  </div>
+</body>
+
 </html>
