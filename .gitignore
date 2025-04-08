@@ -25,4 +25,5 @@ dist-ssr
 
 # Node
 .dist/
+.logs/
 .env
