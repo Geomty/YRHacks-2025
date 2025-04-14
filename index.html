@@ -11,7 +11,7 @@
 
 <body>
   <div class="bg-white">
-    <div class="flex h-[4em] sticky mb-20 top-0 max-w items-center gap-8 p-8 border-b-1 border-lightgray">
+    <div class="flex h-[4em] sticky mb-8 top-0 max-w items-center gap-8 p-8 border-b-1 border-lightgray">
       <div class="flex items-center justify-between gap-4 -mx-2">
         <img width="20" height="20" src="brain_logo.svg" alt="orange brain logo" />
         <h1 fontSize="20rem" class="gap-4 font-bold text-lightorange">In The Node</h1>
@@ -21,7 +21,7 @@
         <input
           class="w-full shadow-sm m-auto p-1 pl-8 overflow-hidden rounded-xl border-1 
           border-lightgray placeholder:text-lightgrey focus:border-lightorange focus:outline-none focus:ring-0 focus:shadow-lightorange"
-          placeholder="Enter Link..." id="userid"/>
+          placeholder="Enter Link..." id="userid" />
         <button class="bg-lightorange rounded-lg text-white px-4 py-1">
           Generate
         </button>
@@ -34,12 +34,12 @@
       </div>
     </div>
 
-      <div id="tree" class="mt-8 overflow-auto w-screen h-[calc(100vh-4em)] bg-center bg:[url(dot_pattern.svg)] bg-repeat absolute top-[4em] left-0">
-        <a id="link" download class="hidden"></a>
-        <svg id="svg"></svg>
-      </div>
+    <div id="tree"
+      class="overflow-auto w-screen h-[calc(100vh-4em-var(--spacing)*8)] bg-center bg:[url(dot_pattern.svg)] bg-repeat top-[4em] left-0">\
+      <a id="link" download class="hidden"></a>
+    </div>
 
-      <div id="modal"></div>
+    <div id="modal"></div>
     <script type="module" src="/frontend/websocket.js"></script>
     <script type="module" src="/frontend/tree.js"></script>
     <script type="module" src="/frontend/main.js"></script>

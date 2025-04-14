@@ -53,50 +53,68 @@ function objToArray(obj) {
     return arr;
 }
 
-window.createNodeElement = node => {
-    document.getElementById("tree").children[document.getElementById("tree").childElementCount - 1].innerHTML += `
-        <div class="w-fit h-fit z-10 p-8 flex items-center rounded-2xl hover:cursor-grab bg-lightblue shadow-sm shadow-black px-6 py-3">
-            <div class="m-auto text-black text-2xl hover:cursor-pointer" onClick="() => modal = node">${node.title}</div>
-        </div>
-    `;
-    let a = document.getElementById("tree").children[document.getElementById("tree").childElementCount - 1];
-    return a.children[a.childElementCount - 1];
+function createNodeElement(node) {
+    const tree = document.getElementById("tree");
+    const parent = tree.children[tree.childElementCount - 1];
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "w-fit h-fit z-10 p-8 flex items-center rounded-2xl hover:cursor-grab bg-lightblue shadow-sm shadow-black px-6 py-3";
+
+    const inner = document.createElement("div");
+    inner.className = "m-auto text-black text-2xl hover:cursor-pointer";
+    inner.textContent = node.title;
+    inner.onclick = () => { modal = node; };
+
+    wrapper.appendChild(inner);
+    parent.appendChild(wrapper);
+
+    return new Promise(resolve => {
+        requestAnimationFrame(() => {
+            console.log(wrapper);
+            resolve(wrapper);
+        });
+    });
 }
 
 window.tree = new TreeClass("Deutsch–Jozsa Algorithm", "https://en.wikipedia.org/wiki/Deutsch–Jozsa_algorithm");
 tree.rootNode.description = "A deterministic quantum algorithm that is one of the first examples of a quantum algorithm that is exponentially faster than any possible deterministic classical algorithm.";
 
-function connectElements(el1, el2) {
-    const box1 = el1.getBoundingClientRect();
-    const box2 = el2.getBoundingClientRect();
+function drawCurve(from, to) {
+    const svg = document.getElementById("svg");
+    const svgTop = svg.getBoundingClientRect().top;
 
-    const x1 = box1.left + box1.width / 2 + window.scrollX;
-    const y1 = box1.top + box1.height / 2 + window.scrollY;
-    const x2 = box2.left + box2.width / 2 + window.scrollX;
-    const y2 = box2.top + box2.height / 2 + window.scrollY;
+    const fromBox = from.getBoundingClientRect();
+    const toBox = to.getBoundingClientRect();
 
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-    const length = Math.sqrt(dx * dx + dy * dy);
-    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+    const startX = fromBox.left + fromBox.width / 2;
+    const startY = fromBox.top + fromBox.height - svgTop;
+    const endX = toBox.left + toBox.width / 2;
+    const endY = toBox.top - svgTop;
 
-    const line = document.createElement('div');
-    line.style.position = 'absolute';
-    line.style.left = `${.5*(x1+x2)}px`;
-    line.style.top = `${.5*(y1+y2)}px`;
-    line.style.width = `${length}px`;
-    line.style.height = '2px';
-    line.style.backgroundColor = 'black';
-    line.style.transform = `rotate(${angle}deg)`;
-    line.style.transformOrigin = '0 0';
-    line.style.zIndex = '999';
+    const controlOffsetX = (endX - startX) / 2;
 
-    document.body.appendChild(line);
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    const d = `M ${startX},${startY} 
+               C ${startX},${startY + controlOffsetX} 
+                 ${endX},${endY - controlOffsetX} 
+                 ${endX},${endY}`;
+
+    path.setAttribute("d", d);
+    path.setAttribute("stroke", "gray");
+    path.setAttribute("stroke-width", "2");
+    path.setAttribute("fill", "none");
+
+    svg.appendChild(path);
+    console.log(from);
+    console.log(to);
+    console.log(svgTop);
+    console.log(fromBox);
+    console.log(toBox);
 }
 
-let updateTree = () => {
+let updateTree = async () => {
     // Position all nodes
-    document.getElementById("tree").innerHTML = "";
+    document.getElementById("tree").innerHTML = "<svg id=\"svg\" style=\"width: 100vw; height: calc(100vh - 4em - var(--spacing)*8); position: absolute; z-index:-1;\"></svg>";
     let arr = objToArray(tree.rootNode);
     for (let i = 0; i < arr.length; i++) {
         document.getElementById("tree").innerHTML += `
@@ -104,16 +122,19 @@ let updateTree = () => {
         `;
 
         for (let j = 0; j < arr[i].length; j++) {
-            arr[i][j].renderedElement = createNodeElement(arr[i][j]);
+            arr[i][j].renderedElement = await createNodeElement(arr[i][j]);
         }
     }
-    for (let i = 0; i < arr.length - 1; i++) {
-        for (let j = 0; j < arr[i].length; j++) {
-            for (let child of arr[i][j].children) {
-                // connectElements(arr[i][j].renderedElement, child.renderedElement);
-            }
-        }
-    }
+    setTimeout(() => {
+        drawCurve(arr[0][0].renderedElement, arr[0][0].children[0].renderedElement);
+    }, 100);
+    // for (let i = 0; i < arr.length - 1; i++) {
+    //     for (let j = 0; j < arr[i].length; j++) {
+    //         for (let child of arr[i][j].children) {
+    //             drawCurve(arr[i][j].renderedElement.children[0], child.renderedElement.children[0]);
+    //         }
+    //     }
+    // }
 };
 
 userid.addEventListener(`focus`, () => userid.select());
