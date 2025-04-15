@@ -6,7 +6,6 @@ async function handleClient(client) {
 
     client.send("Child process running");
     client.on("message", async link => {
-        console.log(link.toString());
         // Get request to generate more nodes
         // let response = await getResponse(link);
         let response = `Quantum Computing Basics; An introduction to the fundamental concepts of quantum computing, including superposition, entanglement, and quantum gates.; https://www.quantumnumbers.com/quantum-computing-basics/

@@ -17,13 +17,13 @@ export class NodeClass {
         this.children = [];
     }
 
-    addChild(childArr) {
-        this.children.push(new NodeClass(childArr[0], childArr[1], childArr[2]));
+    async addChild(childArr) {
+        await this.children.push(new NodeClass(childArr[0], childArr[1], childArr[2]));
     }
 
-    addChildren(children) {
-        children.forEach((child) => {
-            this.addChild(child);
+    async addChildren(children) {
+        await children.forEach(async (child) => {
+            await this.addChild(child);
         });
     }
 
@@ -40,7 +40,7 @@ export class NodeClass {
         //     interval();
         // });
         let pre = await getPrerequisites(this.link);
-        this.addChildren(pre);
+        await this.addChildren(pre);
     }
 }
 
@@ -54,9 +54,9 @@ export class TreeClass {
         document.getElementById("download-button").onclick = this.export;
     }
 
-    extendChild(node) {
+    async extendChild(node) {
         // if (!(node in this.childNodes)) return;
-        node.generateChildren();
+        await node.generateChildren();
         this.childNodes.splice(this.childNodes.indexOf(node), 1);
 
         // Remove duplicates
@@ -75,10 +75,10 @@ export class TreeClass {
         this.childNodes = this.childNodes.concat(node.children);
     }
 
-    extendAllChildren() {
+    async extendAllChildren() {
         for (let node of [...this.childNodes]) {
             if (!node.known) {
-                this.extendChild(node);
+                await this.extendChild(node);
             }
         }
     }
@@ -90,7 +90,7 @@ export class TreeClass {
         });
     }
 
-    export () {
+    export() {
         let file = new File([JSON.stringify(this)], "tree.json");
         let objectURL = URL.createObjectURL(file);
         let linkElement = document.getElementById("download-link");

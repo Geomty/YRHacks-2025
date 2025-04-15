@@ -22,7 +22,7 @@
           class="w-full shadow-sm m-auto p-1 pl-8 overflow-hidden rounded-xl border-1 
           border-lightgray placeholder:text-lightgrey focus:border-lightorange focus:outline-none focus:ring-0 focus:shadow-lightorange"
           placeholder="Enter Link..." id="userid" />
-        <button class="bg-lightorange rounded-lg text-white px-4 py-1">
+        <button id="generate" class="bg-lightorange rounded-lg text-white px-4 py-1">
           Generate
         </button>
         <button class="bg-lightorange rounded-lg text-white px-4 py-1" id="upload-input">
@@ -34,8 +34,9 @@
       </div>
     </div>
 
-    <div id="tree"
-      class="overflow-auto w-screen h-[calc(100vh-4em-var(--spacing)*8)] bg-center bg:[url(dot_pattern.svg)] bg-repeat top-[4em] left-0">\
+    <div
+      class="overflow-auto w-screen h-[calc(100vh-4em-var(--spacing)*8)] bg-center bg:[url(dot_pattern.svg)] bg-repeat top-[4em] left-0">
+      <div id="tree" style="width: fit-content;"></div>
       <a id="link" download class="hidden"></a>
     </div>
 
