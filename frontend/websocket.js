@@ -29,7 +29,7 @@ async function getPrerequisites(link) {
             } else {
                 setTimeout(interval, 0);
             }
-        }
+        };
         interval();
     });
 }

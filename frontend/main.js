@@ -1,15 +1,13 @@
 import {
-    NodeClass,
     TreeClass
 } from "./tree";
 
 function setModal(modal) {
-    if (modal) {
-        function clearModal() {
-            document.getElementById("modal").innerHTML = "";
-        }
-        window.clearModal = clearModal;
-        document.getElementById("modal").innerHTML = `
+    function clearModal() {
+        document.getElementById("modal").innerHTML = "";
+    }
+    window.clearModal = clearModal;
+    document.getElementById("modal").innerHTML = `
             <div class="top-0 left-0 z-10 fixed w-full h-full bg-black" style="opacity: 50%;"></div>
             <div class="z-20 fixed left-1/2 -translate-x-1/2 -translate-y-1/2 w-fit h-fit p-8
             flex flex-col gap-6 items-center text-center bg-lightgray rounded-2xl"
@@ -17,17 +15,18 @@ function setModal(modal) {
                 <div id="title" class="text-2xl text-black font-bold"></div>
                 <div id="description" class="text-xl text-black"></div>
                 <a id="link" class="text-lg underline"></a>
+                <button id="toggleKnown" type="button" className="bg-white rounded-full text-xl text-black px-3 py-1 select-none" style="font-size: x-large;">Toggle Known</button>
                 <button id="closeModal" type="button" className="bg-white rounded-full text-xl text-black px-3 py-1 select-none" style="font-size: x-large;">Close</button>
             </div>
         `;
-        document.getElementById("title").innerHTML = modal.title;
-        document.getElementById("description").innerHTML = modal.description;
-        document.getElementById("link").innerHTML = modal.link;
-        document.getElementById("closeModal").onclick = clearModal;
-        modal = false;
-    } else {
-        // document.getElementById("modal").innerHTML = "";
-    }
+    document.getElementById("title").innerHTML = modal.title;
+    document.getElementById("description").innerHTML = modal.description;
+    document.getElementById("link").innerHTML = modal.link;
+    document.getElementById("toggleKnown").onclick = () => {
+        modal.known = !modal.known;
+        updateTree();
+    };
+    document.getElementById("closeModal").onclick = clearModal;
 }
 
 function objToArray(obj) {
@@ -65,6 +64,9 @@ function createNodeElement(node) {
 
     const wrapper = document.createElement("div");
     wrapper.className = "w-fit h-fit z-10 p-2 flex items-center bg-lightblue shadow-sm shadow-black px-2 py-1";
+    if (node.known) {
+        wrapper.className += " bg-lightorange";
+    }
     wrapper.style.borderRadius = ".5em";
 
     const inner = document.createElement("div");
@@ -83,9 +85,6 @@ function createNodeElement(node) {
     // });
     return wrapper;
 }
-
-window.tree = new TreeClass("Deutsch–Jozsa Algorithm", "https://en.wikipedia.org/wiki/Deutsch–Jozsa_algorithm");
-tree.rootNode.description = "A deterministic quantum algorithm that is one of the first examples of a quantum algorithm that is exponentially faster than any possible deterministic classical algorithm.";
 
 function drawCurve(from, to) {
     const svg = document.getElementById("svg");
@@ -148,10 +147,23 @@ let updateTree = async () => {
 
 userid.addEventListener(`focus`, () => userid.select());
 
-(async () => {
-    await tree.extendAllChildren();
-    updateTree();
-})();
+const rootNodeLink = await new Promise(resolve => {
+    const btn = document.getElementById("generate");
+    btn.onclick = () => {
+        delete btn.onclick;
+        btn.innerText = "Generate";
+        resolve(document.getElementById("userid").value);
+        document.getElementById("userid").value = "";
+    };
+});
+window.tree = new TreeClass("Learning Resource", rootNodeLink);
+tree.rootNode.description = "A learning resource you would like to be able to learn from.";
+updateTree();
+
+// (async () => {
+//     await tree.extendAllChildren();
+//     updateTree();
+// })();
 window.updateTree = updateTree;
 window.addEventListener("resize", updateTree);
 document.getElementById("generate").onclick = async () => {

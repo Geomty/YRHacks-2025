@@ -65,7 +65,7 @@ export class TreeClass {
             if (graphNode.link in links) {
                 for (let child of node) {
                     if (graphNode.link == child.link) {
-                        // node.children.splice(node.children.indexOf(child), 1);
+                        node.children.splice(node.children.indexOf(child), 1);
                         break;
                     }
                 }
