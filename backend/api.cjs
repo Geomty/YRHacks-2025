@@ -31,7 +31,7 @@ class Conversation {
 Title; Description; link
 Example:
 Deutsch–Jozsa algorithm; A deterministic quantum algorithm that is one of the first examples of a quantum algorithm that is exponentially faster than any possible deterministic classical algorithm.; https://en.wikipedia.org/wiki/Deutsch%E2%80%93Jozsa_algorithm
-Each of the prerequisites must be strictly simpler than the given node. Provide the best sources for each topic, and don't allow any duplicates of any topic. Don't necessarily stick to one website. Avoid forums, and stick to sources that only give educational content. Keep in mind the prerequisites can have prerequisites themselves, so don't add too many under each node.` }]
+Each of the prerequisites must be strictly simpler than the given node. Provide the best sources for each topic, and don't allow any duplicates of any topic. Don't necessarily stick to one website. Avoid forums, and stick to sources that only give educational content. Keep in mind the prerequisites can have prerequisites themselves, so don't add too many under each node. Try to reduce the number of prerequisites if possible.` }]
             }
         });
     }

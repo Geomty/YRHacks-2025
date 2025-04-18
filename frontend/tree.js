@@ -6,6 +6,7 @@ export class NodeClass {
     completed;
     known;
     children;
+    parent;
     renderedElement;
 
     constructor(title, description, link) {
@@ -15,10 +16,14 @@ export class NodeClass {
         this.completed = false;
         this.known = false;
         this.children = [];
+        this.parent = { title: "" };
     }
 
     async addChild(childArr) {
-        await this.children.push(new NodeClass(childArr[0], childArr[1], childArr[2]));
+        const child = new NodeClass(childArr[0], childArr[1], childArr[2]);
+        child.parent = this;
+        console.log(this);
+        await this.children.push(child);
     }
 
     async addChildren(children) {
@@ -65,7 +70,7 @@ export class TreeClass {
             if (graphNode.link in links) {
                 for (let child of node) {
                     if (graphNode.link == child.link) {
-                        node.children.splice(node.children.indexOf(child), 1);
+                        node.children = node.children.splice(node.children.indexOf(child), 1);
                         break;
                     }
                 }

@@ -2,23 +2,41 @@ import {
     TreeClass
 } from "./tree";
 
+function clearModal() {
+    document.getElementById("modal").innerHTML = "";
+}
+window.clearModal = clearModal;
+function updateModal() {
+    const modal = document.getElementById("modal");
+    if (modal.innerHTML == "") return;
+    clearModal();
+    setModal(modal.modal);
+}
+window.updateModal = updateModal;
+
 function setModal(modal) {
-    function clearModal() {
-        document.getElementById("modal").innerHTML = "";
-    }
-    window.clearModal = clearModal;
     document.getElementById("modal").innerHTML = `
-            <div class="top-0 left-0 z-10 fixed w-full h-full bg-black" style="opacity: 50%;"></div>
+            <div id="darkbackground" class="top-0 left-0 z-10 fixed w-full h-full bg-black" style="opacity: 50%;"></div>
             <div class="z-20 fixed left-1/2 -translate-x-1/2 -translate-y-1/2 w-fit h-fit p-8
             flex flex-col gap-6 items-center text-center bg-lightgray rounded-2xl"
-            style="position: absolute; top: 50%;">
+            style="position: absolute; top: 50%; max-width: 70vh;">
                 <div id="title" class="text-2xl text-black font-bold"></div>
                 <div id="description" class="text-xl text-black"></div>
-                <a id="link" class="text-lg underline"></a>
+                <a id="link" href="${modal.link}" target="blank" class="text-lg underline">${modal.link}</a>
                 <button id="toggleKnown" type="button" className="bg-white rounded-full text-xl text-black px-3 py-1 select-none" style="font-size: x-large;">Toggle Known</button>
                 <button id="closeModal" type="button" className="bg-white rounded-full text-xl text-black px-3 py-1 select-none" style="font-size: x-large;">Close</button>
             </div>
         `;
+    if (window.innerHeight / window.innerWidth < .65) {
+        document.getElementById("modal").innerHTML += `
+            <div class="z-20 w-fit h-fit p-8 flex flex-col gap-6 items-center text-center bg-lightgray rounded-2xl"
+            style="position: absolute; top:50%; right: 15%; transform: translate(50%, -50%); max-width: 50vh;">
+                <div id="parent-indicator" class="text-2xl text-black font-bold">Parent: ${modal.parent.title}</div>
+                <div id="children-indicator" class="text-xl text-black">
+                    Children:<br>${modal.children.map(child => child.title).join("<br>")}
+                </div>
+            </div>`
+    }
     document.getElementById("title").innerHTML = modal.title;
     document.getElementById("description").innerHTML = modal.description;
     document.getElementById("link").innerHTML = modal.link;
@@ -26,7 +44,9 @@ function setModal(modal) {
         modal.known = !modal.known;
         updateTree();
     };
+    document.getElementById("darkbackground").onclick = clearModal;
     document.getElementById("closeModal").onclick = clearModal;
+    document.getElementById("modal").modal = modal;
 }
 
 function objToArray(obj) {
@@ -46,7 +66,7 @@ function objToArray(obj) {
             for (let child of curr.children) {
                 // child = JSON.parse(JSON.stringify(child));
                 child.pos = pos + 1;
-                child.parent = arr[pos].length;
+                // child.parent = arr[pos].length;
                 queue.push(child);
             }
         }
@@ -63,9 +83,11 @@ function createNodeElement(node) {
     const parent = tree.children[tree.childElementCount - 1];
 
     const wrapper = document.createElement("div");
-    wrapper.className = "w-fit h-fit z-10 p-2 flex items-center bg-lightblue shadow-sm shadow-black px-2 py-1";
+    wrapper.className = "w-fit h-fit z-10 p-2 flex items-center shadow-sm shadow-black px-2 py-1";
     if (node.known) {
-        wrapper.className += " bg-lightorange";
+        wrapper.className += " bg-paleorange";
+    } else {
+        wrapper.style.backgroundColor = "var(--colour)";
     }
     wrapper.style.borderRadius = ".5em";
 
@@ -74,7 +96,26 @@ function createNodeElement(node) {
     inner.textContent = node.title;
     inner.onclick = () => { setModal(node); };
 
+    const inner2 = document.createElement("button");
+    // inner2.innerText = "Toggle";
+    inner2.onclick = () => {
+        node.known = !node.known;
+        updateTree();
+    };
+    inner2.style.fontSize = "xx-small";
+    inner2.style.backgroundColor = "#fffa";
+    inner2.style.borderRadius = "100%";
+    inner2.style.marginLeft = ".5em";
+    inner2.style.marginRight = "-.5em";
+    // inner2.style.marginTop = "1em";
+    inner2.style.width = "2em";
+    inner2.style.height = "2em";
+    // inner2.style.borderColor = "gray";
+    // inner2.style.borderWidth = "1px";
+    // inner2.style.borderStyle = "solid";
+
     wrapper.appendChild(inner);
+    wrapper.appendChild(inner2);
     parent.appendChild(wrapper);
 
     // return new Promise(resolve => {
@@ -119,13 +160,17 @@ let updateTree = async () => {
     // Position all nodes
     let treeElement = document.getElementById("tree");
     treeElement.innerHTML = "";
-    treeElement.innerHTML = "<div style=\"min-width: 100%; max-height: 0; overflow: visible;\"><svg id=\"svg\" style=\"width: 100%; height: calc(100vh - 4em - var(--spacing)*8); top: 4em;\"></svg></div>";
+    treeElement.innerHTML = "<div style=\"width: 100%; max-height: 0; overflow: visible;\"><svg id=\"svg\" style=\"width: 100vw; min-height: 100000vh; top: 4em;\"></svg></div>";
     let arr = objToArray(tree.rootNode);
     for (let i = 0; i < arr.length; i++) {
         const child = document.createElement("div");
-        child.className = "h-30 w-full flex flex-no-wrap justify-around align-center gap-8";
+        child.className = "h-30 w-full flex justify-around align-center gap-8";
+        child.style.maxWidth = "100vw";
+        child.style.flexWrap = "wrap";
+        child.style.height = "fit-content";
+        child.style.marginBottom = "calc(var(--spacing) * 4)";
+        child.style.setProperty("--colour", `var(--color-${i % 8})`);
         treeElement.appendChild(child);
-
 
         for (let j = 0; j < arr[i].length; j++) {
             arr[i][j].renderedElement = await createNodeElement(arr[i][j]);
@@ -165,7 +210,10 @@ updateTree();
 //     updateTree();
 // })();
 window.updateTree = updateTree;
-window.addEventListener("resize", updateTree);
+window.addEventListener("resize", () => {
+    updateTree();
+    updateModal();
+});
 document.getElementById("generate").onclick = async () => {
     await tree.extendAllChildren();
     updateTree();

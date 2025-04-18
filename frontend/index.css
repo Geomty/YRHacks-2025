@@ -3,8 +3,21 @@
 @theme {
     --color-lightgray: rgb(224, 224, 224);
     --color-lightorange: rgb(255, 148, 16);
+    --color-paleorange: rgb(255, 200, 100);
     --color-lightblue: rgb(94, 133, 228);
     --color-lightbeige: rgb(254, 232, 186);
     --color-lightgreen: rgb(92, 191, 126);
     --color-lightpurple: rgb(215, 189, 247);
+}
+
+body {
+    --color-0: rgb(224, 224, 224);
+    --color-no: rgb(255, 148, 16);
+    --color-1: rgb(94, 133, 228);
+    --color-2: rgb(254, 232, 186);
+    --color-3: rgb(92, 191, 126);
+    --color-4: rgb(215, 189, 247);
+    --color-5: #97b9ab;
+    --color-6: #fdd6bd;
+    --color-7: #c2dde9;
 }
