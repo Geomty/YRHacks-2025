@@ -17,14 +17,16 @@
         <h1 fontSize="20rem" class="gap-4 font-bold text-lightorange">In The Node</h1>
       </div>
 
-      <div class='flex ml-8 w-4/5 h-8 gap-8 items-center'>
-        <input
-          class="w-full shadow-sm m-auto p-1 pl-8 overflow-hidden rounded-xl border-1 
+      <div class='flex w-4/5 h-8 gap-8 items-center'>
+        <form id="linkForm" class='flex w-4/5 h-8 gap-8 items-center'>
+          <input
+            class="w-full shadow-sm m-auto p-1 pl-8 overflow-hidden rounded-xl border-1 
           border-lightgray placeholder:text-lightgrey focus:border-lightorange focus:outline-none focus:ring-0 focus:shadow-lightorange"
-          placeholder="Enter Link..." id="userid" />
-        <button id="generate" class="bg-lightorange rounded-lg text-white px-4 py-1">
-          Enter Link
-        </button>
+            placeholder="Enter Link..." id="userid" />
+            <button id="generate" type="submit" class="bg-lightorange rounded-lg text-white px-4 py-1">
+              Enter Link
+            </button>
+        </form>
         <button class="bg-lightorange rounded-lg text-white px-4 py-1" id="upload-input">
           Upload
         </button>
@@ -36,7 +38,8 @@
 
     <div
       class="overflow-auto w-screen h-[calc(100vh-4em-var(--spacing)*8)] bg-center bg:[url(dot_pattern.svg)] bg-repeat top-[4em] left-0">
-      <div id="tree" style="width: fit-content; height:fit-content; display: flex; flex-direction: column;overflow: hidden;"></div>
+      <div id="tree"
+        style="width: fit-content; height:fit-content; display: flex; flex-direction: column;overflow: hidden;"></div>
       <a id="link" download class="hidden"></a>
     </div>
 

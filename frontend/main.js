@@ -194,12 +194,30 @@ userid.addEventListener(`focus`, () => userid.select());
 
 const rootNodeLink = await new Promise(resolve => {
     const btn = document.getElementById("generate");
-    btn.onclick = () => {
-        delete btn.onclick;
+    const f = function (e) {
+        e.preventDefault();
+        document.getElementById("linkForm").removeEventListener("submit", f);
         btn.innerText = "Generate";
         resolve(document.getElementById("userid").value);
         document.getElementById("userid").value = "";
-    };
+    }
+    document.getElementById("linkForm").addEventListener("submit", f);
+    // btn.onclick = () => {
+    //     delete btn.onclick;
+    //     document.getElementById("linkForm").removeEventListener(f);
+    //     btn.innerText = "Generate";
+    //     resolve(document.getElementById("userid").value);
+    //     document.getElementById("userid").value = "";
+    // };
+    // const f = function (e) {
+    //     e.preventDefault();
+    //     delete btn.onclick;
+    //     document.getElementById("linkForm").removeEventListener(f);
+    //     btn.innerText = "Generate";
+    //     resolve(document.getElementById("userid").value);
+    //     document.getElementById("userid").value = "";
+    // };
+    // document.getElementById("linkForm").addEventListener("submit", f);
 });
 window.tree = new TreeClass("Learning Resource", rootNodeLink);
 tree.rootNode.description = "A learning resource you would like to be able to learn from.";
