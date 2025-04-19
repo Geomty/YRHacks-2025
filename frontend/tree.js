@@ -162,6 +162,7 @@ async function importTree() {
 
     const tree = new TreeClass(json.rootNode.title, json.rootNode.link);
     tree.rootNode = convertToNode(json.rootNode);
+    tree.rootNode.parent = { title: "" };
 
     const linkSet = new Set(json.childNodes.map(child => child.link));
     tree.childNodes = [];
