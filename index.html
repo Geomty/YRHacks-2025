@@ -27,7 +27,7 @@
               Enter Link
             </button>
         </form>
-        <button class="bg-lightorange rounded-lg text-white px-4 py-1" id="upload-input">
+        <button class="bg-lightorange rounded-lg text-white px-4 py-1" id="upload-button">
           Upload
         </button>
         <button class="bg-lightorange rounded-lg text-white px-4 py-1" id="download-button">
@@ -40,7 +40,8 @@
       class="overflow-auto w-screen h-[calc(100vh-4em-var(--spacing)*8)] bg-center bg:[url(dot_pattern.svg)] bg-repeat top-[4em] left-0">
       <div id="tree"
         style="width: fit-content; height:fit-content; display: flex; flex-direction: column;overflow: hidden;"></div>
-      <a id="link" download class="hidden"></a>
+      <a id="download-link" download class="hidden"></a>
+      <input type="file" id="upload-input" style="display: none;" />
     </div>
 
     <div id="modal"></div>

@@ -22,7 +22,6 @@ export class NodeClass {
     async addChild(childArr) {
         const child = new NodeClass(childArr[0], childArr[1], childArr[2]);
         child.parent = this;
-        console.log(this);
         await this.children.push(child);
     }
 
@@ -56,7 +55,8 @@ export class TreeClass {
     constructor(title, link) {
         this.rootNode = new NodeClass(title, null, link);
         this.childNodes = [this.rootNode];
-        document.getElementById("download-button").onclick = this.export;
+
+        document.getElementById("download-button").onclick = () => this.export();
     }
 
     async extendChild(node) {
@@ -95,54 +95,86 @@ export class TreeClass {
         });
     }
 
+    // Strip cyclic and DOM properties
+    toJSONSafe() {
+        const stripNode = (node) => {
+            return {
+                title: node.title,
+                description: node.description,
+                link: node.link,
+                completed: node.completed,
+                known: node.known,
+                children: node.children.map(stripNode)
+            };
+        };
+        return {
+            rootNode: stripNode(this.rootNode),
+            childNodes: this.childNodes.map(n => ({
+                link: n.link
+            }))
+        };
+    }
+
     export() {
-        let file = new File([JSON.stringify(this)], "tree.json");
-        let objectURL = URL.createObjectURL(file);
-        let linkElement = document.getElementById("download-link");
+        const stripped = this.toJSONSafe();
+        const file = new File([JSON.stringify(stripped, null, 2)], "tree.json");
+        const objectURL = URL.createObjectURL(file);
+        const linkElement = document.getElementById("download-link");
         linkElement.href = objectURL;
         linkElement.click();
         URL.revokeObjectURL(objectURL);
     }
 }
 
-function convertToNode(json) {
+function convertToNode(json, parent = null) {
     let node = new NodeClass(json.title, json.description, json.link);
     node.completed = json.completed;
     node.known = json.known;
-    for (let child of json.children) {
-        node.children.push(convertToNode(child));
+    node.parent = parent;
+    for (let childJson of json.children || []) {
+        let childNode = convertToNode(childJson, node);
+        node.children.push(childNode);
     }
     return node;
 }
 
 async function importTree() {
-    await new Promise((resolve, reject) => {
-        let interval;
-        interval = () => {
-            if (document.getElementById("upload-input").files.length > 0) {
-                if (document.getElementById("upload-input").files[0] != null) {
-                    resolve();
-                } else {
-                    setTimeout(interval, 0);
-                }
-            } else {
-                setTimeout(interval, 0);
+    document.getElementById("generate").click();
+
+    const inputElement = document.getElementById("upload-input");
+    inputElement.click();
+    inputElement.value = null;
+
+    const file = await new Promise((resolve) => {
+        const check = () => {
+            if (inputElement.files) {
+                const file = inputElement.files[0];
+                if (file) resolve(file);
+                else setTimeout(check, 0);
             }
-        }
-        interval();
+            else setTimeout(check, 0);
+        };
+        check();
     });
-    let file = document.getElementById("upload-input").files[0];
-    document.getElementById("upload-input").files[0] = null;
-    let json = JSON.parse(await file.text());
-    let tree = new TreeClass(json.rootNode.title, json.rootNode.link);
+
+    inputElement.value = null;
+    const json = JSON.parse(await file.text());
+
+    const tree = new TreeClass(json.rootNode.title, json.rootNode.link);
     tree.rootNode = convertToNode(json.rootNode);
-    let links = json.childNodes.map(child => child.link);
+
+    const linkSet = new Set(json.childNodes.map(child => child.link));
     tree.childNodes = [];
     tree.traverseAllNodes(node => {
-        if (node.link in links) {
+        if (linkSet.has(node.link)) {
             tree.childNodes.push(node);
         }
     });
+
+    window.tree = tree;
+    updateTree();
+
+    return tree;
 }
 
-document.getElementById("upload-input").onclick = importTree;
+document.getElementById("upload-button").onclick = importTree;
